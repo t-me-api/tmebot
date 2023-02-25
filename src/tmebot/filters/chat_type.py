@@ -1,15 +1,15 @@
-from typing import Set, Optional, Union
+from typing import Sequence, Optional, Union
 
 from tapp import filters
-from tbot_api import types
+from tbot_api import types, enums
 
 
-class ChatTypeFilter(filters.Filter):
+class ChatType(filters.Filter):
     def __init__(
         self,
-        chat_type: Union[str, Set[str]]
+        chat_type: Union[enums.ChatType, Sequence[enums.ChatType]]
     ) -> None:
-        self.chat_type = {chat_type} if isinstance(chat_type, str) else chat_type
+        self.chat_type = {chat_type} if isinstance(chat_type, enums.ChatType) else set(chat_type)
 
     def find_chat_type(
         self,
@@ -20,7 +20,7 @@ class ChatTypeFilter(filters.Filter):
             types.ChatMemberUpdated,
             types.ChatJoinRequest
         ]
-    ) -> Optional[str]:
+    ) -> str:
         if isinstance(update, types.InlineQuery):
             chat_type = update.chat_type
         elif isinstance(update, types.CallbackQuery):
